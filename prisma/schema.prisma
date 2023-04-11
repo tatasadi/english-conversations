@@ -16,6 +16,8 @@ model User {
 
   password Password?
   notes    Note[]
+
+  conversations Conversation[]
 }
 
 model Password {
@@ -36,3 +38,43 @@ model Note {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 }
+
+model Conversation {
+  id String @id @default(cuid())
+  level Level
+  course Int
+  lesson Int
+  sentences Sentence[] 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+}
+
+model Sentence {
+  id String @id @default(cuid())
+  order Int
+  type SentenceType
+  text String
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+}
+
+enum Level{
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+  Business
+}
+
+enum SentenceType {
+  PersonA
+  PersonB
+  Description
+}
+
