@@ -4,7 +4,7 @@ import { getConversationListItems } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
 
 export const meta: V2_MetaFunction = () => {
-  return [{ title: "English Conversations" }];
+  return [{ title: "Save Conversations" }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
