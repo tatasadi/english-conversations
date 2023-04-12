@@ -34,3 +34,12 @@ export function getConversationListItems({ userId }: { userId: User["id"] }) {
     orderBy: { createdAt: "desc" },
   });
 }
+
+export function deleteConversation({
+  id,
+  userId,
+}: Pick<Conversation, "id"> & { userId: User["id"] }) {
+  return prisma.conversation.deleteMany({
+    where: { id, userId },
+  });
+}

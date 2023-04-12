@@ -1,7 +1,11 @@
-import { LoaderArgs, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { ActionArgs, LoaderArgs, json, redirect } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { getConversation } from "~/models/conversation.server";
+import {
+  deleteConversation,
+  getConversation,
+} from "~/models/conversation.server";
+import { requireUserId } from "~/session.server";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.conversationId, "conversationId not found");
@@ -12,6 +16,15 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
   return json({ conversation });
+}
+
+export async function action({ request, params }: ActionArgs) {
+  const userId = await requireUserId(request);
+  invariant(params.conversationId, "conversationId not found");
+
+  await deleteConversation({ userId, id: params.conversationId });
+
+  return redirect("/conversation");
 }
 
 export default function ConversationDetailsPage() {
@@ -75,6 +88,15 @@ export default function ConversationDetailsPage() {
           }
         })}
       </main>
+      <hr className="my-4" />
+      <Form method="post">
+        <button
+          type="submit"
+          className="rounded bg-indigo-500  px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
+        >
+          Delete Conversation
+        </button>
+      </Form>
     </div>
   );
 }

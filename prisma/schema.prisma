@@ -58,7 +58,7 @@ model Sentence {
   order Int
   type SentenceType
   text String
-  conversation Conversation @relation(fields: [conversationId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   conversationId String
 }
 

@@ -7,9 +7,12 @@ async function seed() {
   const email = "ehsan@tatasadi.com";
 
   // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
+
+  await prisma.sentence.deleteMany();
+  await prisma.conversation.deleteMany();
+  await prisma.note.deleteMany();
+  await prisma.password.deleteMany();
+  await prisma.user.deleteMany();
 
   const hashedPassword = await bcrypt.hash("remixiscool", 10);
 
