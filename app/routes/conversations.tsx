@@ -1,7 +1,15 @@
 import { json, LoaderArgs } from "@remix-run/node";
-import { NavLink, useLoaderData, V2_MetaFunction } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  NavLink,
+  Outlet,
+  useLoaderData,
+  V2_MetaFunction,
+} from "@remix-run/react";
 import { getConversationListItems } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
+import { useUser } from "~/utils";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Save Conversations" }];
@@ -15,85 +23,56 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function ConversationsPage() {
   const data = useLoaderData<typeof loader>();
+  const user = useUser();
   return (
-    <div>
-      {data.conversationListItems.length === 0 ? (
-        <p className="p-4">No conversations yet</p>
-      ) : (
-        <ol>
-          {data.conversationListItems.map((conversation) => (
-            <li key={conversation.id}>
-              <NavLink
-                className={({ isActive }) =>
-                  `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
-                }
-                to={conversation.id}
-              >
-                {conversation.level}- {conversation.course}-{" "}
-                {conversation.lesson}
-              </NavLink>
-            </li>
-          ))}
-        </ol>
-      )}
+    <div className="flex h-full min-h-screen flex-col">
+      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
+        <h1 className="text-3xl font-bold">
+          <Link to=".">Conversations</Link>
+        </h1>
+        <p>{user.email}</p>
+        <Form action="/logout" method="post">
+          <button
+            type="submit"
+            className="rounded bg-slate-600 px-4 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
+          >
+            Logout
+          </button>
+        </Form>
+      </header>
+
+      <main className="flex h-full bg-white">
+        <div className="h-full w-80 border-r bg-gray-50">
+          <Link to="new" className="block p-4 text-xl text-blue-500">
+            + New Conversation
+          </Link>
+
+          <hr />
+          {data.conversationListItems.length === 0 ? (
+            <p className="p-4">No conversations yet</p>
+          ) : (
+            <ol>
+              {data.conversationListItems.map((conversation) => (
+                <li key={conversation.id}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
+                    }
+                    to={conversation.id}
+                  >
+                    {conversation.level}- {conversation.course}-{" "}
+                    {conversation.lesson}
+                  </NavLink>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        <div className="flex-1 p-6">
+          <Outlet />
+        </div>
+      </main>
     </div>
-    // <div
-    //   style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}
-    //   className="mx-auto max-w-4xl p-4"
-    // >
-    //   <h1 className="text-center text-xl">
-    //     Level {conversation.level}, Course {conversation.course}, Lesson{" "}
-    //     {conversation.lesson}
-    //   </h1>
-    //   <main className="mt-4 grid grid-cols-12 gap-y-2 rounded-lg border bg-gray-100 p-4">
-    //     {conversation.sentences.map((c) => {
-    //       switch (c.type) {
-    //         case "PersonA":
-    //           return (
-    //             <div
-    //               key={c.id}
-    //               className="col-start-1 col-end-13 rounded-lg p-3 sm:col-end-8"
-    //             >
-    //               <div className="flex flex-row items-center">
-    //                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500">
-    //                   A
-    //                 </div>
-    //                 <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
-    //                   <div>{c.text}</div>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           );
-    //         case "PersonB":
-    //           return (
-    //             <div
-    //               key={c.id}
-    //               className="col-start-1 col-end-13 rounded-lg p-3 sm:col-start-6"
-    //             >
-    //               <div className="flex flex-row-reverse items-center">
-    //                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500">
-    //                   B
-    //                 </div>
-    //                 <div className="relative mr-3 rounded-xl bg-indigo-100 px-4 py-2 text-sm shadow">
-    //                   <div>{c.text}</div>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           );
-    //         default:
-    //           return (
-    //             <div
-    //               key={c.id}
-    //               className="col-span-12 flex justify-center text-sm"
-    //             >
-    //               <div className="rounded-lg bg-gray-300 px-6 py-2">
-    //                 {c.text}
-    //               </div>
-    //             </div>
-    //           );
-    //       }
-    //     })}
-    //   </main>
-    // </div>
   );
 }
