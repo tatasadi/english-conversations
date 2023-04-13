@@ -37,7 +37,7 @@ export async function action({ request, params }: ActionArgs) {
 
   switch (requestType) {
     case "delete-conversation":
-      //await deleteConversation({ userId, id: conversationId });
+      await deleteConversation({ userId, id: conversationId });
       return redirect("/conversations");
 
     case "add-sentence":
@@ -142,7 +142,7 @@ export default function ConversationDetailsPage() {
       <Form method="post">
         <input value="add-sentence" name="request-type" readOnly hidden />
 
-        <div className="mt-4 flex justify-between gap-2">
+        <div className="mt-4 flex flex-col justify-between gap-2 sm:flex-row">
           <div className="">
             <div className="">
               <select

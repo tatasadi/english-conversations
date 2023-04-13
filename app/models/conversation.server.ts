@@ -43,6 +43,28 @@ export function deleteConversation({
   });
 }
 
+export function createConversation({
+  level,
+  course,
+  lesson,
+  userId,
+}: Pick<Conversation, "level" | "course" | "lesson"> & {
+  userId: User["id"];
+}) {
+  return prisma.conversation.create({
+    data: {
+      level,
+      course,
+      lesson,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  });
+}
+
 export function createSentence({
   type,
   text,
