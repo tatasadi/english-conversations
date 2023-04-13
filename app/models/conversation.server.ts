@@ -1,4 +1,4 @@
-import { User, Conversation } from "@prisma/client";
+import { User, Conversation, Sentence } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
@@ -15,12 +15,11 @@ export function getConversation({ id }: Pick<Conversation, "id">) {
       sentences: {
         select: {
           id: true,
-          order: true,
           type: true,
           text: true,
         },
         orderBy: {
-          order: "asc",
+          createdAt: "asc",
         },
       },
     },
@@ -41,5 +40,25 @@ export function deleteConversation({
 }: Pick<Conversation, "id"> & { userId: User["id"] }) {
   return prisma.conversation.deleteMany({
     where: { id, userId },
+  });
+}
+
+export function createSentence({
+  type,
+  text,
+  conversationId,
+}: Pick<Sentence, "type" | "text"> & {
+  conversationId: Conversation["id"];
+}) {
+  return prisma.sentence.create({
+    data: {
+      type,
+      text,
+      conversation: {
+        connect: {
+          id: conversationId,
+        },
+      },
+    },
   });
 }

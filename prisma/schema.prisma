@@ -10,19 +10,15 @@ generator client {
 model User {
   id    String @id @default(cuid())
   email String @unique
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   password Password?
   notes    Note[]
-
   conversations Conversation[]
 }
 
 model Password {
   hash String
-
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
 }
@@ -31,10 +27,8 @@ model Note {
   id    String @id @default(cuid())
   title String
   body  String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 }
@@ -45,19 +39,18 @@ model Conversation {
   course Int
   lesson Int
   sentences Sentence[] 
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 }
 
 model Sentence {
   id String @id @default(cuid())
-  order Int
   type SentenceType
   text String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   conversationId String
 }

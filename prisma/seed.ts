@@ -38,7 +38,6 @@ async function seed() {
 
   await prisma.sentence.create({
     data: {
-      order: 1,
       type: "Description",
       text: "Es ist beinah an der Zeit für einen großen Sport-Wettkamp. Ren und Aida versuchen, online Tickets zu bekommen...",
       conversationId: conversation.id,
@@ -47,7 +46,6 @@ async function seed() {
 
   await prisma.sentence.create({
     data: {
-      order: 2,
       type: "PersonA",
       text: "What do you want to see, Aida? Do you like swimming?",
       conversationId: conversation.id,
@@ -55,7 +53,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 3,
       type: "PersonB",
       text: "Yes, I love swimming. It's my favorite sport.",
       conversationId: conversation.id,
@@ -63,7 +60,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 4,
       type: "PersonA",
       text: "Great, me too!",
       conversationId: conversation.id,
@@ -71,7 +67,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 5,
       type: "Description",
       text: "Ren versucht, Tickets für Schwimmen zu bekommen, aber sie sind schon alle weg...",
       conversationId: conversation.id,
@@ -79,7 +74,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 6,
       type: "PersonB",
       text: "Oh no! We can't watch swimming. Do you like basketball?",
       conversationId: conversation.id,
@@ -87,7 +81,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 7,
       type: "PersonA",
       text: "Umm, no, I don't like basketball.",
       conversationId: conversation.id,
@@ -95,7 +88,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 8,
       type: "PersonB",
       text: "Do you like watching tennis?",
       conversationId: conversation.id,
@@ -103,7 +95,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 9,
       type: "PersonA",
       text: "Yes, I like watching tennis.",
       conversationId: conversation.id,
@@ -111,7 +102,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 10,
       type: "Description",
       text: "Die beiden versuchen, Tickets für Tennis zu reservieren...",
       conversationId: conversation.id,
@@ -119,7 +109,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 11,
       type: "PersonB",
       text: "We got the last two tickets!",
       conversationId: conversation.id,
@@ -127,7 +116,6 @@ async function seed() {
   });
   await prisma.sentence.create({
     data: {
-      order: 12,
       type: "PersonA",
       text: "Yes, I'm so excited!",
       conversationId: conversation.id,

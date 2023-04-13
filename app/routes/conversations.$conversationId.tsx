@@ -1,7 +1,16 @@
+import { SentenceType } from "@prisma/client";
 import { ActionArgs, LoaderArgs, json, redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  isRouteErrorResponse,
+  useActionData,
+  useLoaderData,
+  useRouteError,
+} from "@remix-run/react";
+import { useRef } from "react";
 import invariant from "tiny-invariant";
 import {
+  createSentence,
   deleteConversation,
   getConversation,
 } from "~/models/conversation.server";
@@ -11,7 +20,7 @@ export async function loader({ request, params }: LoaderArgs) {
   invariant(params.conversationId, "conversationId not found");
 
   const conversation = await getConversation({ id: params.conversationId });
-  console.log(conversation);
+  //console.log(conversation);
   if (!conversation) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -20,11 +29,52 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
   const userId = await requireUserId(request);
-  invariant(params.conversationId, "conversationId not found");
+  const conversationId = params.conversationId;
+  invariant(conversationId, "conversationId not found");
 
-  await deleteConversation({ userId, id: params.conversationId });
+  const formData = await request.formData();
+  const requestType = formData.get("request-type");
 
-  return redirect("/conversation");
+  switch (requestType) {
+    case "delete-conversation":
+      //await deleteConversation({ userId, id: conversationId });
+      return redirect("/conversations");
+
+    case "add-sentence":
+      const typeString = formData.get("type");
+      const text = formData.get("sentence");
+
+      if (typeof typeString !== "string" || typeString.length === 0) {
+        return json(
+          { errors: { type: "Type is required", text: null } },
+          { status: 400 }
+        );
+      }
+
+      if (typeof text !== "string" || text.length === 0) {
+        return json(
+          { errors: { type: null, text: "text is required" } },
+          { status: 400 }
+        );
+      }
+
+      let type;
+      switch (typeString) {
+        case "PersonA":
+          type = SentenceType.PersonA;
+          break;
+        case "PersonB":
+          type = SentenceType.PersonB;
+          break;
+        default:
+          type = SentenceType.Description;
+          break;
+      }
+
+      let response = await createSentence({ type, text, conversationId });
+
+      return json(response);
+  }
 }
 
 export default function ConversationDetailsPage() {
@@ -49,7 +99,7 @@ export default function ConversationDetailsPage() {
                   className="col-start-1 col-end-13 rounded-lg p-3 sm:col-end-8"
                 >
                   <div className="flex flex-row items-center">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
                       A
                     </div>
                     <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
@@ -65,7 +115,7 @@ export default function ConversationDetailsPage() {
                   className="col-start-1 col-end-13 rounded-lg p-3 sm:col-start-6"
                 >
                   <div className="flex flex-row-reverse items-center">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
                       B
                     </div>
                     <div className="relative mr-3 rounded-xl bg-indigo-100 px-4 py-2 text-sm shadow">
@@ -88,15 +138,79 @@ export default function ConversationDetailsPage() {
           }
         })}
       </main>
+
+      <Form method="post">
+        <input value="add-sentence" name="request-type" readOnly hidden />
+
+        <div className="mt-4 flex justify-between gap-2">
+          <div className="">
+            <div className="">
+              <select
+                name="type"
+                id="type"
+                autoComplete="type"
+                className="block w-full rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
+              >
+                <option value="Description">Description</option>
+                <option value="PersonA">Person A</option>
+                <option value="PersonB">Person B</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grow">
+            <div className="">
+              <input
+                type="text"
+                name="sentence"
+                id="sentence"
+                min={1}
+                autoComplete="sentence"
+                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400 sm:col-span-2"
+          >
+            Add Sentence
+          </button>
+        </div>
+      </Form>
       <hr className="my-4" />
       <Form method="post">
+        <input
+          value="delete-conversation"
+          name="request-type"
+          readOnly
+          hidden
+        />
         <button
           type="submit"
-          className="rounded bg-indigo-500  px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
+          className="rounded bg-red-600  px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
         >
           Delete Conversation
         </button>
       </Form>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (error instanceof Error) {
+    return <div>An unexpected error occurred: {error.message}</div>;
+  }
+
+  if (!isRouteErrorResponse(error)) {
+    return <h1>Unknown Error</h1>;
+  }
+
+  if (error.status === 404) {
+    return <div>Conversation not found</div>;
+  }
+
+  return <div>An unexpected error occurred: {error.statusText}</div>;
 }
