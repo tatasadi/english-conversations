@@ -5,8 +5,10 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
+  useNavigate,
   V2_MetaFunction,
 } from "@remix-run/react";
+import { ChangeEvent, useState } from "react";
 import { getConversationListItems } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
@@ -24,9 +26,18 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function ConversationsPage() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
+  const navigate = useNavigate();
+  const [selectValue, setSelectedValue] = useState("none");
+
+  function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
+    const conversationId = event.target.value;
+    setSelectedValue(conversationId);
+    navigate(`./${conversationId}`);
+  }
+
   return (
-    <div className="flex h-full min-h-screen flex-col">
-      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
+    <div className="flex flex-col">
+      <header className="flex flex-col items-center justify-between gap-2 bg-slate-800 p-4 text-white sm:flex-row">
         <h1 className="text-3xl font-bold">
           <Link to=".">Conversations</Link>
         </h1>
@@ -41,9 +52,12 @@ export default function ConversationsPage() {
         </Form>
       </header>
 
-      <main className="flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-50">
-          <Link to="new" className="block p-4 text-xl text-blue-500">
+      <main className="flex h-full flex-col bg-white">
+        <div className="flex h-full w-full flex-col items-center gap-1 border-r p-4 sm:flex-row">
+          <Link
+            to="new"
+            className="block rounded bg-indigo-600 p-2 text-xl text-white"
+          >
             + New Conversation
           </Link>
 
@@ -51,25 +65,23 @@ export default function ConversationsPage() {
           {data.conversationListItems.length === 0 ? (
             <p className="p-4">No conversations yet</p>
           ) : (
-            <ol>
+            <select
+              className="rounded border-2 bg-white p-2"
+              value={selectValue}
+              onChange={handleSelectChange}
+            >
+              <option value="none">---Select a lesson---</option>
               {data.conversationListItems.map((conversation) => (
-                <li key={conversation.id}>
-                  <NavLink
-                    className={({ isActive }) =>
-                      `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
-                    }
-                    to={conversation.id}
-                  >
-                    {conversation.level}- {conversation.course}-{" "}
-                    {conversation.lesson}
-                  </NavLink>
-                </li>
+                <option key={conversation.id} value={conversation.id}>
+                  {conversation.level}-{conversation.course}-
+                  {conversation.lesson}
+                </option>
               ))}
-            </ol>
+            </select>
           )}
         </div>
 
-        <div className="flex-1 p-6">
+        <div className="mb-auto sm:p-6">
           <Outlet />
         </div>
       </main>

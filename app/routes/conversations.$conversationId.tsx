@@ -142,7 +142,7 @@ export default function ConversationDetailsPage() {
       <Form method="post">
         <input value="add-sentence" name="request-type" readOnly hidden />
 
-        <div className="mt-4 flex flex-col justify-between gap-2 sm:flex-row">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
           <div className="">
             <div className="">
               <select
@@ -172,14 +172,14 @@ export default function ConversationDetailsPage() {
           </div>
           <button
             type="submit"
-            className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400 sm:col-span-2"
+            className="self-center rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400 sm:col-span-2"
           >
             Add Sentence
           </button>
         </div>
       </Form>
       <hr className="my-4" />
-      <Form method="post">
+      <Form method="post" className="flex flex-col">
         <input
           value="delete-conversation"
           name="request-type"
@@ -188,7 +188,7 @@ export default function ConversationDetailsPage() {
         />
         <button
           type="submit"
-          className="rounded bg-red-600  px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
+          className="self-center rounded  bg-red-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
         >
           Delete Conversation
         </button>
