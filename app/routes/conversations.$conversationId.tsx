@@ -181,7 +181,7 @@ export default function ConversationDetailsPage() {
             name="type"
             id="type"
             autoComplete="type"
-            className="block rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
+            className="block rounded-md border-0 bg-white text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-5"
           >
             <option value="Description">Description</option>
             <option value="PersonA">Person A</option>

@@ -58,7 +58,7 @@ export default function ConversationsPage() {
             <p className="p-4">No conversations yet</p>
           ) : (
             <select
-              className="block rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
+              className="block w-48 rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-5"
               value={selectValue}
               onChange={handleSelectChange}
             >
