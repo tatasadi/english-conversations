@@ -7,7 +7,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import invariant from "tiny-invariant";
 import {
   createSentence,
@@ -79,6 +79,12 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function ConversationDetailsPage() {
   const { conversation } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const addFormRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    addFormRef.current?.reset();
+  }, [actionData]);
 
   return (
     <div
@@ -139,7 +145,7 @@ export default function ConversationDetailsPage() {
         })}
       </main>
 
-      <Form method="post">
+      <Form method="post" ref={addFormRef}>
         <input value="add-sentence" name="request-type" readOnly hidden />
 
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
