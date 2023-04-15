@@ -52,21 +52,13 @@ export default function ConversationsPage() {
         </Form>
       </header>
 
-      <main className="flex h-full flex-col bg-white">
-        <div className="flex h-full w-full flex-col items-center gap-1 border-r p-4 sm:flex-row">
-          <Link
-            to="new"
-            className="block rounded bg-indigo-600 p-2 text-xl text-white"
-          >
-            + New Conversation
-          </Link>
-
-          <hr />
+      <main className="m-auto flex h-full max-w-4xl flex-col bg-white">
+        <div className="flex h-full w-full flex-col items-center gap-1 p-4 sm:flex-row sm:justify-between">
           {data.conversationListItems.length === 0 ? (
             <p className="p-4">No conversations yet</p>
           ) : (
             <select
-              className="rounded border-2 bg-white p-2"
+              className="block rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
               value={selectValue}
               onChange={handleSelectChange}
             >
@@ -79,6 +71,10 @@ export default function ConversationsPage() {
               ))}
             </select>
           )}
+
+          <Link to="new" className="block text-green-600">
+            Add New Conversation
+          </Link>
         </div>
 
         <div className="mb-auto sm:p-6">

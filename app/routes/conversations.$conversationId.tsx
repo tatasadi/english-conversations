@@ -95,9 +95,9 @@ export default function ConversationDetailsPage() {
   return (
     <div
       style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}
-      className="mx-auto max-w-4xl p-4"
+      className="mx-auto max-w-4xl"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-center gap-4 px-2">
         <h1 className="text-xl">
           Level {conversation.level}, Course {conversation.course}, Lesson{" "}
           {conversation.lesson}
@@ -117,14 +117,14 @@ export default function ConversationDetailsPage() {
           </button>
         </Form>
       </div>
-      <main className="mt-4 grid grid-cols-12 gap-y-2 rounded-lg border bg-gray-100 p-4">
+      <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gray-100 p-2 sm:rounded-lg sm:border">
         {conversation.sentences.map((c) => {
           switch (c.type) {
             case "PersonA":
               return (
                 <div
                   key={c.id}
-                  className="col-start-1 col-end-13 rounded-lg p-3 sm:col-end-8"
+                  className="col-start-1 col-end-13 rounded-lg p-1 sm:col-end-8 sm:p-3"
                 >
                   <div className="flex flex-row items-center">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
@@ -140,7 +140,7 @@ export default function ConversationDetailsPage() {
               return (
                 <div
                   key={c.id}
-                  className="col-start-1 col-end-13 rounded-lg p-3 sm:col-start-6"
+                  className="col-start-1 col-end-13 rounded-lg p-1 sm:col-start-6 sm:p-3"
                 >
                   <div className="flex flex-row-reverse items-center">
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
@@ -156,7 +156,7 @@ export default function ConversationDetailsPage() {
               return (
                 <div
                   key={c.id}
-                  className="col-span-12 flex justify-center text-sm"
+                  className="col-span-12 flex justify-center p-1 text-sm sm:p-3"
                 >
                   <div className="rounded-lg bg-gray-300 px-6 py-2">
                     {c.text}
@@ -170,41 +170,35 @@ export default function ConversationDetailsPage() {
       <Form method="post" ref={addFormRef}>
         <input value="add-sentence" name="request-type" readOnly hidden />
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-between">
-          <div className="">
+        <div className="flex flex-row gap-2 p-2 sm:mt-4 sm:p-0">
+          <select
+            name="type"
+            id="type"
+            autoComplete="type"
+            className="block rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
+          >
+            <option value="Description">Description</option>
+            <option value="PersonA">Person A</option>
+            <option value="PersonB">Person B</option>
+          </select>
+          <div className="flex-grow">
             <div className="">
-              <select
-                name="type"
-                id="type"
-                autoComplete="type"
-                className="block w-full rounded-md border-0 bg-white p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-7"
-              >
-                <option value="Description">Description</option>
-                <option value="PersonA">Person A</option>
-                <option value="PersonB">Person B</option>
-              </select>
+              <input
+                type="text"
+                name="sentence"
+                id="sentence"
+                min={1}
+                autoComplete="sentence"
+                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
             </div>
           </div>
-          <div className="flex gap-2">
-            <div className="grow">
-              <div className="">
-                <input
-                  type="text"
-                  name="sentence"
-                  id="sentence"
-                  min={1}
-                  autoComplete="sentence"
-                  className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="text-indigo-600 hover:text-indigo-500 sm:col-span-2"
-            >
-              <PlusCircleIcon className="h-8 w-8" />
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="text-indigo-600 hover:text-indigo-500 sm:col-span-2"
+          >
+            <PlusCircleIcon className="h-8 w-8" />
+          </button>
         </div>
       </Form>
     </div>
