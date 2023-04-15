@@ -128,7 +128,7 @@ export default function ConversationDetailsPage() {
         </Form>
       </div>
       {conversation.sentences.length > 0 && (
-        <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gray-100 p-2 sm:rounded-lg sm:border">
+        <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gradient-to-r from-primary-200 to-secondary-200 p-2 sm:rounded-lg sm:border">
           {conversation.sentences.map((c) => {
             switch (c.type) {
               case "PersonA":
@@ -138,7 +138,7 @@ export default function ConversationDetailsPage() {
                     className="col-start-1 col-end-13 rounded-lg p-1 sm:col-end-8 sm:p-3"
                   >
                     <div className="flex flex-row items-center">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-white">
                         A
                       </div>
                       <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
@@ -154,10 +154,10 @@ export default function ConversationDetailsPage() {
                     className="col-start-1 col-end-13 rounded-lg p-1 sm:col-start-6 sm:p-3"
                   >
                     <div className="flex flex-row-reverse items-center">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-600 text-white">
                         B
                       </div>
-                      <div className="relative mr-3 rounded-xl bg-indigo-100 px-4 py-2 text-sm shadow">
+                      <div className="relative mr-3 rounded-xl bg-primary-100 px-4 py-2 text-sm shadow">
                         <div>{c.text}</div>
                       </div>
                     </div>
@@ -169,7 +169,7 @@ export default function ConversationDetailsPage() {
                     key={c.id}
                     className="col-span-12 flex justify-center p-1 text-sm sm:p-3"
                   >
-                    <div className="rounded-lg bg-gray-300 px-6 py-2">
+                    <div className="rounded-lg bg-secondary-600 px-6 py-2 text-white">
                       {c.text}
                     </div>
                   </div>
@@ -186,7 +186,7 @@ export default function ConversationDetailsPage() {
             name="type"
             id="type"
             autoComplete="type"
-            className="block rounded-md border-0 bg-white text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-5"
+            className="block rounded-md border-0 bg-white text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-5"
           >
             <option value="Description">Description</option>
             <option value="PersonA">Person A</option>
@@ -227,7 +227,7 @@ export default function ConversationDetailsPage() {
           </div>
           <button
             type="submit"
-            className="text-indigo-600 hover:text-indigo-500 disabled:text-gray-600 sm:col-span-2"
+            className="text-primary-600 hover:text-primary-500 disabled:text-gray-600 sm:col-span-2"
             disabled={isSubmitting}
           >
             <PlusCircleIcon className="h-10 w-10" />
