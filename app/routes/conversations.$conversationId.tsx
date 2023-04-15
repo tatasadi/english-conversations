@@ -5,6 +5,7 @@ import {
   isRouteErrorResponse,
   useActionData,
   useLoaderData,
+  useNavigation,
   useRouteError,
 } from "@remix-run/react";
 import { useEffect, useRef } from "react";
@@ -87,6 +88,8 @@ export default function ConversationDetailsPage() {
   const actionData = useActionData<typeof action>();
   const addFormRef = useRef<HTMLFormElement>(null);
   const textRef = useRef<HTMLInputElement>(null);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state == "submitting";
 
   useEffect(() => {
     addFormRef.current?.reset();
@@ -117,62 +120,64 @@ export default function ConversationDetailsPage() {
           />
           <button
             type="submit"
-            className="self-center rounded text-red-600 hover:bg-indigo-600 focus:bg-indigo-400"
+            className="self-center rounded text-red-600 hover:text-red-500 disabled:text-gray-600"
+            disabled={isSubmitting}
           >
             <TrashIcon className="h-6 w-6" />
           </button>
         </Form>
       </div>
-      <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gray-100 p-2 sm:rounded-lg sm:border">
-        {conversation.sentences.map((c) => {
-          switch (c.type) {
-            case "PersonA":
-              return (
-                <div
-                  key={c.id}
-                  className="col-start-1 col-end-13 rounded-lg p-1 sm:col-end-8 sm:p-3"
-                >
-                  <div className="flex flex-row items-center">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
-                      A
-                    </div>
-                    <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
-                      <div>{c.text}</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            case "PersonB":
-              return (
-                <div
-                  key={c.id}
-                  className="col-start-1 col-end-13 rounded-lg p-1 sm:col-start-6 sm:p-3"
-                >
-                  <div className="flex flex-row-reverse items-center">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
-                      B
-                    </div>
-                    <div className="relative mr-3 rounded-xl bg-indigo-100 px-4 py-2 text-sm shadow">
-                      <div>{c.text}</div>
+      {conversation.sentences.length > 0 && (
+        <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gray-100 p-2 sm:rounded-lg sm:border">
+          {conversation.sentences.map((c) => {
+            switch (c.type) {
+              case "PersonA":
+                return (
+                  <div
+                    key={c.id}
+                    className="col-start-1 col-end-13 rounded-lg p-1 sm:col-end-8 sm:p-3"
+                  >
+                    <div className="flex flex-row items-center">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
+                        A
+                      </div>
+                      <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
+                        <div>{c.text}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            default:
-              return (
-                <div
-                  key={c.id}
-                  className="col-span-12 flex justify-center p-1 text-sm sm:p-3"
-                >
-                  <div className="rounded-lg bg-gray-300 px-6 py-2">
-                    {c.text}
+                );
+              case "PersonB":
+                return (
+                  <div
+                    key={c.id}
+                    className="col-start-1 col-end-13 rounded-lg p-1 sm:col-start-6 sm:p-3"
+                  >
+                    <div className="flex flex-row-reverse items-center">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white">
+                        B
+                      </div>
+                      <div className="relative mr-3 rounded-xl bg-indigo-100 px-4 py-2 text-sm shadow">
+                        <div>{c.text}</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              );
-          }
-        })}
-      </main>
-
+                );
+              default:
+                return (
+                  <div
+                    key={c.id}
+                    className="col-span-12 flex justify-center p-1 text-sm sm:p-3"
+                  >
+                    <div className="rounded-lg bg-gray-300 px-6 py-2">
+                      {c.text}
+                    </div>
+                  </div>
+                );
+            }
+          })}
+        </main>
+      )}
       <Form method="post" ref={addFormRef}>
         <input value="add-sentence" name="request-type" readOnly hidden />
 
@@ -196,7 +201,7 @@ export default function ConversationDetailsPage() {
                 min={1}
                 ref={textRef}
                 autoComplete="sentence"
-                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:ring-red-600 focus:ring-inset  sm:text-sm sm:leading-6"
+                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:ring-red-600 focus:ring-inset sm:text-sm sm:leading-6"
                 aria-invalid={actionData?.errors?.text ? true : undefined}
                 aria-errormessage={
                   actionData?.errors?.text ? "text-error" : undefined
@@ -222,9 +227,10 @@ export default function ConversationDetailsPage() {
           </div>
           <button
             type="submit"
-            className="text-indigo-600 hover:text-indigo-500 sm:col-span-2"
+            className="text-indigo-600 hover:text-indigo-500 disabled:text-gray-600 sm:col-span-2"
+            disabled={isSubmitting}
           >
-            <PlusCircleIcon className="h-8 w-8" />
+            <PlusCircleIcon className="h-10 w-10" />
           </button>
         </div>
       </Form>
