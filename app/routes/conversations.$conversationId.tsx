@@ -18,15 +18,14 @@ import { requireUserId } from "~/session.server";
 
 import {
   TrashIcon,
-  PaperAirplaneIcon,
   PlusCircleIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/solid";
 
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.conversationId, "conversationId not found");
 
   const conversation = await getConversation({ id: params.conversationId });
-  //console.log(conversation);
   if (!conversation) {
     throw new Response("Not Found", { status: 404 });
   }
@@ -59,7 +58,7 @@ export async function action({ request, params }: ActionArgs) {
 
       if (typeof text !== "string" || text.length === 0) {
         return json(
-          { errors: { type: null, text: "text is required" } },
+          { errors: { type: null, text: "Text is required" } },
           { status: 400 }
         );
       }
@@ -79,7 +78,7 @@ export async function action({ request, params }: ActionArgs) {
 
       let response = await createSentence({ type, text, conversationId });
 
-      return json(response);
+      return redirect(`.`);
   }
 }
 
@@ -87,9 +86,16 @@ export default function ConversationDetailsPage() {
   const { conversation } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const addFormRef = useRef<HTMLFormElement>(null);
+  const textRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     addFormRef.current?.reset();
+  }, [actionData]);
+
+  useEffect(() => {
+    if (actionData?.errors?.text) {
+      textRef.current?.focus();
+    }
   }, [actionData]);
 
   return (
@@ -170,7 +176,7 @@ export default function ConversationDetailsPage() {
       <Form method="post" ref={addFormRef}>
         <input value="add-sentence" name="request-type" readOnly hidden />
 
-        <div className="flex flex-row gap-2 p-2 sm:mt-4 sm:p-0">
+        <div className="flex flex-row items-center gap-2 p-2 sm:mt-4 sm:p-0">
           <select
             name="type"
             id="type"
@@ -182,15 +188,36 @@ export default function ConversationDetailsPage() {
             <option value="PersonB">Person B</option>
           </select>
           <div className="flex-grow">
-            <div className="">
+            <div className="relative">
               <input
                 type="text"
                 name="sentence"
                 id="sentence"
                 min={1}
+                ref={textRef}
                 autoComplete="sentence"
-                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:ring-red-600 focus:ring-inset  sm:text-sm sm:leading-6"
+                aria-invalid={actionData?.errors?.text ? true : undefined}
+                aria-errormessage={
+                  actionData?.errors?.text ? "text-error" : undefined
+                }
               />
+              {actionData?.errors?.text && (
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <ExclamationCircleIcon
+                    className="h-5 w-5 text-red-500"
+                    aria-hidden="true"
+                  />
+                </div>
+              )}
+              {actionData?.errors?.text && (
+                <div
+                  className="absolute pt-1 text-sm text-red-700"
+                  id="title-error"
+                >
+                  {actionData.errors.text}
+                </div>
+              )}
             </div>
           </div>
           <button
