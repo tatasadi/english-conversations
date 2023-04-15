@@ -16,6 +16,12 @@ import {
 } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
 
+import {
+  TrashIcon,
+  PaperAirplaneIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/solid";
+
 export async function loader({ request, params }: LoaderArgs) {
   invariant(params.conversationId, "conversationId not found");
 
@@ -91,10 +97,26 @@ export default function ConversationDetailsPage() {
       style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}
       className="mx-auto max-w-4xl p-4"
     >
-      <h1 className="text-center text-xl">
-        Level {conversation.level}, Course {conversation.course}, Lesson{" "}
-        {conversation.lesson}
-      </h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-xl">
+          Level {conversation.level}, Course {conversation.course}, Lesson{" "}
+          {conversation.lesson}
+        </h1>
+        <Form method="post" className="flex flex-col">
+          <input
+            value="delete-conversation"
+            name="request-type"
+            readOnly
+            hidden
+          />
+          <button
+            type="submit"
+            className="self-center rounded text-red-600 hover:bg-indigo-600 focus:bg-indigo-400"
+          >
+            <TrashIcon className="h-6 w-6" />
+          </button>
+        </Form>
+      </div>
       <main className="mt-4 grid grid-cols-12 gap-y-2 rounded-lg border bg-gray-100 p-4">
         {conversation.sentences.map((c) => {
           switch (c.type) {
@@ -163,41 +185,27 @@ export default function ConversationDetailsPage() {
               </select>
             </div>
           </div>
-
-          <div className="grow">
-            <div className="">
-              <input
-                type="text"
-                name="sentence"
-                id="sentence"
-                min={1}
-                autoComplete="sentence"
-                className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+          <div className="flex gap-2">
+            <div className="grow">
+              <div className="">
+                <input
+                  type="text"
+                  name="sentence"
+                  id="sentence"
+                  min={1}
+                  autoComplete="sentence"
+                  className="focus:ring-0.5 ring-1shadow-sm block w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
             </div>
+            <button
+              type="submit"
+              className="text-indigo-600 hover:text-indigo-500 sm:col-span-2"
+            >
+              <PlusCircleIcon className="h-8 w-8" />
+            </button>
           </div>
-          <button
-            type="submit"
-            className="self-center rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400 sm:col-span-2"
-          >
-            Add Sentence
-          </button>
         </div>
-      </Form>
-      <hr className="my-4" />
-      <Form method="post" className="flex flex-col">
-        <input
-          value="delete-conversation"
-          name="request-type"
-          readOnly
-          hidden
-        />
-        <button
-          type="submit"
-          className="self-center rounded  bg-red-600 px-4 py-2 text-white hover:bg-indigo-600 focus:bg-indigo-400"
-        >
-          Delete Conversation
-        </button>
       </Form>
     </div>
   );
