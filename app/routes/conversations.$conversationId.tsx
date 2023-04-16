@@ -91,9 +91,7 @@ export default function ConversationDetailsPage() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state == "submitting";
 
-  useEffect(() => {
-    addFormRef.current?.reset();
-  }, [actionData]);
+  addFormRef.current?.reset();
 
   useEffect(() => {
     if (actionData?.errors?.text) {
