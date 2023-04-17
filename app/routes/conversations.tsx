@@ -2,13 +2,14 @@ import { json, LoaderArgs } from "@remix-run/node";
 import {
   Form,
   Link,
-  NavLink,
   Outlet,
   useLoaderData,
   useNavigate,
+  useNavigation,
   V2_MetaFunction,
 } from "@remix-run/react";
 import { ChangeEvent, useState } from "react";
+import Loader from "~/components/loader";
 import { getConversationListItems } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
@@ -28,6 +29,9 @@ export default function ConversationsPage() {
   const user = useUser();
   const navigate = useNavigate();
   const [selectValue, setSelectedValue] = useState("none");
+  const navigation = useNavigation();
+  const isLoading =
+    navigation.state === "loading" || navigation.state === "submitting";
 
   function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
     const conversationId = event.target.value;
@@ -51,6 +55,8 @@ export default function ConversationsPage() {
           </button>
         </Form>
       </header>
+
+      {isLoading && <Loader />}
 
       <main className="m-auto flex h-full max-w-4xl flex-col bg-white">
         <div className="flex h-full w-full flex-col items-center gap-1 p-4 sm:flex-row sm:justify-between">
