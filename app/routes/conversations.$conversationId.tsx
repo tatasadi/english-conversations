@@ -13,6 +13,7 @@ import invariant from "tiny-invariant";
 import {
   createSentence,
   deleteConversation,
+  deleteSentence,
   getConversation,
 } from "~/models/conversation.server";
 import { requireUserId } from "~/session.server";
@@ -80,7 +81,32 @@ export async function action({ request, params }: ActionArgs) {
       let response = await createSentence({ type, text, conversationId });
 
       return redirect(`.`);
+
+    case "delete-sentence":
+      const sentenceId = formData.get("delete-sentence-id");
+
+      if (typeof sentenceId !== "string" || sentenceId.length === 0) {
+        return json({ status: 400 });
+      }
+
+      await deleteSentence({ id: sentenceId, conversationId });
+      return redirect(".");
   }
+}
+
+function DeleteSentenceElement({ id }) {
+  return (
+    <Form method="post" className="mx-2 flex flex-col justify-center">
+      <input value="delete-sentence" name="request-type" readOnly hidden />
+      <input value={id} name="delete-sentence-id" readOnly hidden />
+      <button
+        type="submit"
+        className="self-center rounded text-red-600 hover:text-red-500 disabled:text-gray-600"
+      >
+        <TrashIcon className="h-6 w-6" />
+      </button>
+    </Form>
+  );
 }
 
 export default function ConversationDetailsPage() {
@@ -127,7 +153,7 @@ export default function ConversationDetailsPage() {
       </div>
       {conversation.sentences.length > 0 && (
         <main className="mt-4 grid grid-cols-12 gap-y-2 bg-gradient-to-r from-primary-200 to-secondary-200 p-2 sm:rounded-lg sm:border">
-          {conversation.sentences.map((c) => {
+          {conversation.sentences.map((c, index) => {
             switch (c.type) {
               case "PersonA":
                 return (
@@ -142,6 +168,9 @@ export default function ConversationDetailsPage() {
                       <div className="relative ml-3 rounded-xl bg-white px-4 py-2 text-sm shadow">
                         <div>{c.text}</div>
                       </div>
+                      {index === conversation.sentences.length - 1 && (
+                        <DeleteSentenceElement id={c.id} />
+                      )}
                     </div>
                   </div>
                 );
@@ -158,6 +187,9 @@ export default function ConversationDetailsPage() {
                       <div className="relative mr-3 rounded-xl bg-primary-100 px-4 py-2 text-sm shadow">
                         <div>{c.text}</div>
                       </div>
+                      {index === conversation.sentences.length - 1 && (
+                        <DeleteSentenceElement id={c.id} />
+                      )}
                     </div>
                   </div>
                 );
@@ -170,6 +202,9 @@ export default function ConversationDetailsPage() {
                     <div className="rounded-lg bg-secondary-600 px-6 py-2 text-white">
                       {c.text}
                     </div>
+                    {index === conversation.sentences.length - 1 && (
+                      <DeleteSentenceElement id={c.id} />
+                    )}
                   </div>
                 );
             }

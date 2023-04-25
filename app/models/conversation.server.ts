@@ -84,3 +84,12 @@ export function createSentence({
     },
   });
 }
+
+export function deleteSentence({
+  id,
+  conversationId,
+}: Pick<Sentence, "id"> & { conversationId: Conversation["id"] }) {
+  return prisma.sentence.deleteMany({
+    where: { id, conversationId },
+  });
+}

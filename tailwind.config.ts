@@ -6,8 +6,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: colors.green,
-        secondary: colors.teal,
+        primary: colors.purple,
+        secondary: colors.fuchsia,
       },
     },
   },
