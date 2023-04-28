@@ -10,7 +10,6 @@ async function seed() {
 
   await prisma.sentence.deleteMany();
   await prisma.conversation.deleteMany();
-  await prisma.note.deleteMany();
   await prisma.password.deleteMany();
   await prisma.user.deleteMany();
 
