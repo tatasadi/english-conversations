@@ -11,6 +11,7 @@ export function getConversation({ id }: Pick<Conversation, "id">) {
       id: true,
       level: true,
       course: true,
+      courseName: true,
       lesson: true,
       sentences: {
         select: {
@@ -29,7 +30,13 @@ export function getConversation({ id }: Pick<Conversation, "id">) {
 export function getConversationListItems({ userId }: { userId: User["id"] }) {
   return prisma.conversation.findMany({
     where: { userId },
-    select: { id: true, level: true, course: true, lesson: true },
+    select: {
+      id: true,
+      level: true,
+      course: true,
+      courseName: true,
+      lesson: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -46,15 +53,17 @@ export function deleteConversation({
 export function createConversation({
   level,
   course,
+  courseName,
   lesson,
   userId,
-}: Pick<Conversation, "level" | "course" | "lesson"> & {
+}: Pick<Conversation, "level" | "course" | "courseName" | "lesson"> & {
   userId: User["id"];
 }) {
   return prisma.conversation.create({
     data: {
       level,
       course,
+      courseName,
       lesson,
       user: {
         connect: {

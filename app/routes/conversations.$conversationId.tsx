@@ -125,16 +125,18 @@ export default function ConversationDetailsPage() {
     }
   }, [actionData]);
 
+  let title = `Level ${conversation.level}, `;
+  if (conversation.course) title += `Course ${conversation.course}, `;
+  if (conversation.courseName) title += `${conversation.courseName}, `;
+  title += `Lesson ${conversation.lesson}`;
+
   return (
     <div
       style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}
       className="mx-auto max-w-4xl"
     >
       <div className="flex items-center justify-center gap-4 px-2">
-        <h1 className="text-xl">
-          Level {conversation.level}, Course {conversation.course}, Lesson{" "}
-          {conversation.lesson}
-        </h1>
+        <h1 className="text-xl">{title}</h1>
         <Form method="post" className="flex flex-col">
           <input
             value="delete-conversation"

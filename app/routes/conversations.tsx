@@ -69,12 +69,19 @@ export default function ConversationsPage() {
               onChange={handleSelectChange}
             >
               <option value="none">---Select a lesson---</option>
-              {data.conversationListItems.map((conversation) => (
-                <option key={conversation.id} value={conversation.id}>
-                  {conversation.level}-{conversation.course}-
-                  {conversation.lesson}
-                </option>
-              ))}
+              {data.conversationListItems.map((conversation) => {
+                let optionText = `${conversation.level}-`;
+                if (conversation.course)
+                  optionText += `${conversation.course}-`;
+                if (conversation.courseName)
+                  optionText += `${conversation.courseName}-`;
+                optionText += conversation.lesson;
+                return (
+                  <option key={conversation.id} value={conversation.id}>
+                    {optionText}
+                  </option>
+                );
+              })}
             </select>
           )}
 

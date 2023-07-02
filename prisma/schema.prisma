@@ -26,6 +26,7 @@ model Conversation {
   id String @id @default(cuid())
   level Level
   course Int
+  courseName String @default("")
   lesson Int
   sentences Sentence[] 
   createdAt DateTime @default(now())
@@ -52,6 +53,10 @@ enum Level{
   C1
   C2
   Business
+  BusinessA2
+  BusinessB1
+  BusinessB2
+  BusinessC1
 }
 
 enum SentenceType {

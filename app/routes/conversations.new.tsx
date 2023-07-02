@@ -12,6 +12,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const levelString = formData.get("level");
   const course = Number(formData.get("course"));
+  let courseName = formData.get("courseName")?.toString();
   const lesson = Number(formData.get("lesson"));
 
   if (typeof levelString !== "string" || levelString.length === 0) {
@@ -21,12 +22,15 @@ export async function action({ request, params }: ActionArgs) {
     );
   }
 
-  if (course <= 0) {
+  if (
+    course <= 0 &&
+    (typeof courseName !== "string" || courseName.length === 0)
+  ) {
     return json(
       {
         errors: {
           level: null,
-          course: "course is required",
+          course: "course or course name is required",
           lesson: null,
         },
       },
@@ -61,14 +65,29 @@ export async function action({ request, params }: ActionArgs) {
     case "C2":
       level = Level.C2;
       break;
+    case "BusinessA2":
+      level = Level.BusinessA2;
+      break;
+    case "BusinessB1":
+      level = Level.BusinessB1;
+      break;
+    case "BusinessB2":
+      level = Level.BusinessB2;
+      break;
+    case "BusinessC1":
+      level = Level.BusinessC1;
+      break;
     default:
       level = Level.Business;
       break;
   }
 
+  if (!courseName) courseName = "";
+
   let conversation = await createConversation({
     level,
     course,
+    courseName,
     lesson,
     userId,
   });
@@ -80,7 +99,7 @@ export default function NewConversationPage() {
   return (
     <Form method="post" className="flex w-full flex-col gap-8">
       <div className="px-2 py-4">
-        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
           <div className="sm:col-span-2">
             <label
               htmlFor="level"
@@ -101,7 +120,10 @@ export default function NewConversationPage() {
                 <option>B2</option>
                 <option>C1</option>
                 <option>C2</option>
-                <option>Business</option>
+                <option>BusinessA2</option>
+                <option>BusinessB1</option>
+                <option>BusinessB2</option>
+                <option>BusinessC1</option>
               </select>
             </div>
           </div>
@@ -124,6 +146,25 @@ export default function NewConversationPage() {
               />
             </div>
           </div>
+
+          <div className="sm:col-span-2">
+            <label
+              htmlFor="courseName"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
+              Course Name
+            </label>
+            <div className="mt-2">
+              <input
+                type="text"
+                name="courseName"
+                id="courseName"
+                autoComplete="courseName"
+                className="focus:ring-0.5 block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
           <div className="sm:col-span-2">
             <label
               htmlFor="lesson"
