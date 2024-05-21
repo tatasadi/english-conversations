@@ -34,4 +34,4 @@ Here is a screen shot of a saved conversation:
 
 You can add a new conversation, add different sentences to it, remove the last sentence of the conversation or remove the whole conversation.
 
-The conversations belong to the user who created it and nobody else can see it.
+The conversations belong to the user who created it and nobody else can see it. 
